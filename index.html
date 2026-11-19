@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Um sistema de agendamento para facilitar o gerenciamento de compromissos, cadastar clientes e serviços, além de orgnizar horários e acompanhar atendimentos."
+    />
+    <title>Sistema de agendamento</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="cabecalho">
+      <h1 class="cabecalho-titulo">Sistema de Agendamento</h1>
+
+      <nav class="menu-principal" aria-label="Navegação principal">
+        <button class="menu-principal__item ativo" data-secao="dashboard">
+          Dashboard
+        </button>
+        <button class="menu-principal__item" data-secao="clientes">
+          Clientes
+        </button>
+        <button class="menu-principal__item" data-secao="servicos">
+          Serviços
+        </button>
+        <button class="menu-principal__item" data-secao="agendamentos">
+          Agendamentos
+        </button>
+        <button class="menu-principal__item" data-secao="calendario">
+          Calendário
+        </button>
+      </nav>
+    </header>
+
+    <main class="conteudo-principal">
+      <!-- Seção Dashboard -->
+      <section id="secao-dashboard" class="secao ativo">
+        <h2>Dashboard</h2>
+
+        <div class="cartoes-indicadores">
+          <div class="cartao-indicador">
+            <span class="cartao-indicador__numero" id="indicador-total">0</span>
+            <span class="cartao-indicador__label">Total de agendamentos</span>
+          </div>
+
+          <div class="cartao-indicador">
+            <span class="cartao-indicador__numero" id="indicador-hoje">0</span>
+            <span class="cartao-indicador__label">Agendamentos hoje</span>
+          </div>
+
+          <div class="cartao-indicador">
+            <span class="cartao-indicador__numero" id="indicador-futuros"
+              >0</span
+            >
+            <span class="cartao-indicador__label">Agendamentos futuros</span>
+          </div>
+
+          <div class="cartao-indicador">
+            <span class="cartao-indicador__numero" id="indicador-cancelados"
+              >0</span
+            >
+            <span class="cartao-indicador__label">Cancelados</span>
+          </div>
+        </div>
+
+        <div class="bloco-proximos">
+          <h3>Próximos compromissos</h3>
+          <ul id="lista-proximos-compromissos" class="lista-proximos">
+            <!-- preenchido pelo jS -->
+          </ul>
+        </div>
+      </section>
+
+      <!-- Seção Clientes -->
+      <section id="secao-clientes" class="secao">
+        <h2>Clientes</h2>
+
+        <form id="formulario-cliente" class="formulario" novalidate>
+          <input type="hidden" id="cliente-id" />
+
+          <div class="campo-formulario">
+            <label for="cliente-nome">Nome completo:</label>
+            <input type="text" id="cliente-nome" name="nome" required />
+            <span class="mensagem-erro" id="erro-cliente-nome"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="cliente-telefone">Telefone:</label>
+            <input
+              type="tel"
+              id="cliente-telefone"
+              name="telefone"
+              placeholder="(99) 99999-9999"
+              required
+            />
+            <span class="mensagem-erro" id="erro-cliente-telefone"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="cliente-email">E-mail:</label>
+            <input type="email" id="cliente-email" name="email" required />
+            <span class="mensagem-erro" id="erro-cliente-email"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="cliente-observacoes">Observações</label>
+            <textarea
+              name="observacoes"
+              id="cliente-observacoes"
+              name="observacoes"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="acoes-formulario">
+            <button type="submit" class="botao botao-primario">
+              Salvar cliente
+            </button>
+            <button
+              type="button"
+              id="botao-cancelar-cliente"
+              class="botao botao-secudanrio"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+
+        <div class="area-listagem">
+          <div class="area-listagem__cabecalho">
+            <h3>Clientes cadastrados</h3>
+            <input
+              type="search"
+              id="pesquisa-cliente"
+              placeholder="Pesquisar por nome..."
+            />
+          </div>
+
+          <table class="tabela" id="tabela-cliente">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela-clientes">
+              <!-- preenchido pelo JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção Serviços -->
+      <section id="secao-servicos" class="secao">
+        <h2>Serviços</h2>
+
+        <form id="formulario-servicos" class="formulario" novalidate>
+          <input type="hidden" id="servico-id" />
+
+          <div class="campo-formulario">
+            <label for="servico-nome">Nome do serviço:</label>
+            <input type="text" id="servico-nome" name="nome" required />
+            <span class="mensagem-erro" id="erro-servico-nome"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="servico-descricao">Descrição</label>
+            <textarea
+              id="servico-descricao"
+              name="descricao"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="servico-duracao">Duração (minutos):</label>
+            <input
+              type="number"
+              id="servico-duracao"
+              name="duracao"
+              min="1"
+              required
+            />
+            <span class="mensagem-erro" id="erro-servico-duracao"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="servico-preco">Preço (R$):</label>
+            <input
+              type="number"
+              id="servico-preco"
+              name="preco"
+              min="0"
+              step="0.01"
+              required
+            />
+            <span class="mensagem-erro" id="erro-servico-preco"></span>
+          </div>
+
+          <div class="acoes-formulario">
+            <button type="submit" class="botao botao-primario">
+              Salvar serviços
+            </button>
+            <button
+              type="button"
+              id="botao-cancelar-servico"
+              class="botao botao-secundario"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+
+        <div class="area-listagem">
+          <h3>Serviços cadastrados</h3>
+          <table class="tabela" id="tabela-servicos">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Duração</th>
+                <th>Preço</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela-servicos">
+              <!-- preenchilo no JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção  Agendamentos -->
+      <section id="secao-agendamentos" class="secao">
+        <h2>Agendamentos</h2>
+
+        <form id="formulario-agendamento" class="formulario" novalidate>
+          <input type="hidden" id="agendamento-id" />
+
+          <div class="campo-formulario">
+            <label for="agendamento-cliente">Cliente:</label>
+            <select id="agendamento-cliente" name="cliente" required>
+              <option value="">Selecione um cliente</option>
+            </select>
+            <span class="mensagem-erro" id="erro-agendamento-cliente"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="agendamento-servico">Serviço:</label>
+            <select id="agendamento-servico" name="servico" required>
+              <option value="">Selecione um serviço</option>
+            </select>
+            <span class="mensagem-erro" id="erro-agendamento-servico"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="agendamento-data">Data:</label>
+            <input type="date" id="agendamento-data" name="data" required />
+            <span class="mensagem-erro" id="erro-agendamento-data"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="agendamento-horario">Horário:</label>
+            <input
+              type="time"
+              id="agendamento-horario"
+              name="horario"
+              required
+            />
+            <span class="mensagem-erro" id="erro-agendamento-horario"></span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="agendamento-status">Status</label>
+            <select id="agendamento-status" name="status">
+              <option value="agendado">Agendado</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="agendamento-observacoes">Observações</label>
+            <textarea
+              id="agendamento-observacoes"
+              name="observacoes"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="acoes-formulario">
+            <button type="submit" class="botao botao--primario">
+              Salvar agendamento
+            </button>
+            <button
+              type="button"
+              id="botao-cancelar-agendamento"
+              class="botao botao--secundario"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+
+        <div class="area-listagem">
+          <div class="area-listagem__cabecalho">
+            <h3>Agendamentos</h3>
+            <input
+              type="search"
+              id="pesquisa-agendamentos"
+              placeholder="Pesquisar por cliente..."
+            />
+            <input type="date" id="filtro-data-agendamentos" />
+            <select id="filtro-status-agendamentos">
+              <option value="">Todos os status</option>
+              <option value="agendado">Agendado</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+            <select id="filtro-servico-agendamentos">
+              <option value="">Todos os serviços</option>
+            </select>
+          </div>
+
+          <table class="tabela" id="tabela-agendamentos">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Duração</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela-agendamentos">
+              <!-- preenchido pelo JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção Calendário -->
+      <section id="secao-calendario" class="secao">
+        <h2>Calendário</h2>
+
+        <div class="calendario__navegacao">
+          <button
+            id="botao-mes-anterior"
+            class="botao botao-secundario"
+            aria-label="Mês anterior"
+          >
+            ←
+          </button>
+          <span id="calendario-mes-ano">Mês / Ano</span>
+          <button
+            id="botao-mes-segunite"
+            class="botao botao-secundario"
+            aria-label="Mês seguinte"
+          >
+            →
+          </button>
+        </div>
+
+        <div class="calendario__grade" id="grade-calendario">
+          <!-- preenchido pelo JS -->
+        </div>
+
+        <div id="detalhes-dia-calendario" class="calendario__detalhes" hidden>
+          <!-- preenchido pelo JS quando o usuário clica em um dia -->
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

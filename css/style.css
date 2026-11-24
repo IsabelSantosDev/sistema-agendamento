@@ -239,6 +239,20 @@ h1, h2, h3{
     gap: var(--espacamento-medio);
 }
 
+.feedback-mensagem{
+    grid-column: 1 / -1;
+    font-size: .85rem;
+    min-height: 1.2rem;
+}
+
+.feedback-mensagem--sucesso{
+    color: var(--cor-sucesso);
+}
+
+.feedback-mensagem--erro{
+    color: var(--cor-erro);
+}
+
 /* Botões */
 .botao{
     font-family: 'Poppins', sans-serif;
@@ -277,6 +291,16 @@ h1, h2, h3{
 
 .botao--secundario:hover{
     background-color: var(--cor-borda);
+}
+
+.celula-acoes{
+    display: flex;
+    gap: .5rem;
+}
+
+.botao--pequeno{
+    padding: .375rem .75rem;
+    font-size: .8rem;
 }
 
 /* Área de listagem e tabelas */

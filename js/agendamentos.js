@@ -9,6 +9,10 @@ const campoAgendamentoObservacoes = document.getElementById("agendamento-observa
 const corpoTabelaAgendamentos = document.getElementById("corpo-tabela-agendamentos");
 const botaoCancelarFormularioAgendamento = document.getElementById("botao-cancelar-agendamento");
 const botaoSalvarAgendamento = document.getElementById("botao-salvar-agendamento");
+const campoPesquisaAgendamentos = document.getElementById("pesquisa-agendamentos");
+const campoFiltroDataAgendamentos = document.getElementById("filtro-data-agendamentos");
+const campoFiltroStatusAgendamentos = document.getElementById("filtro-status-agendamentos");
+const campoFiltroServicoAgendamentos = document.getElementById("filtro-servico-agendamentos");
 const botaoMenuAgendamentos = document.querySelector('[data-secao="agendamentos"]');
 
 // Busca lista de agendamentos no localStorage
@@ -85,7 +89,7 @@ function popularSelectServicos() {
     obterServicos().forEach(function (servico){
         const opcao = document.createElement("option");
         opcao.value = servico.id;
-        opcao.textContent = servico.nome + "("+ servico.duracao + "min)";
+        opcao.textContent = servico.nome + " (" + servico.duracao + " min)";
         campoAgendamentoServico.appendChild(opcao);
     });
 }
@@ -209,9 +213,11 @@ function excluirAgendamento(agendamentoId) {
 }
 
 function renderizarTabelaAgendamentos() {
-    const agendamentos = obterAgendamentos();
+    const todosAgendamentos = obterAgendamentos();
     const clientes = obterClientes();
     const servicos = obterServicos();
+
+    const agendamentos = filtrarEOrdenarAgendamentos(todosAgendamentos, clientes);
 
     corpoTabelaAgendamentos.textContent = "";
 
@@ -370,7 +376,72 @@ botaoMenuAgendamentos.addEventListener("click", function () {
 // Impede selecionar uma data anterior a hoje no input nativo
 campoAgendamentoData.min = obterDataHojeISO();
 
+function popularFiltroServicoAgendamentos() {
+    while (campoFiltroServicoAgendamentos.options.length > 1) {
+        campoFiltroServicoAgendamentos.remove(1);
+    }
+
+    obterServicos().forEach(function (servico) {
+        const opcao = document.createElement("option");
+        opcao.value = servico.id;
+        opcao.textContent = servico.nome;
+        campoFiltroServicoAgendamentos.appendChild(opcao);
+    });
+}
+
+// Aplica pesquisa por nome do cliente, filtros de data/status/serviço, e ordena o resultado por data e horário (mais próximos primeiro).
+function filtrarEOrdenarAgendamentos(agendamentos, clientes) {
+    const termoPesquisa = campoPesquisaAgendamentos.value.trim().toLowerCase();
+    const filtroData = campoFiltroDataAgendamentos.value;
+    const filtroStatus = campoFiltroStatusAgendamentos.value;
+    const filtroServico = campoFiltroServicoAgendamentos.value;
+
+    const filtrados = agendamentos.filter(function (agendamento) {
+        if (filtroData !== "" && agendamento.data !== filtroData) {
+            return false;
+        }
+
+        if (filtroStatus !== "" && agendamento.status !== filtroStatus) {
+            return false;
+        }
+
+        if (filtroServico !== "" && agendamento.servicoId !== filtroServico) {
+            return false;
+        }
+
+        if (termoPesquisa !== "") {
+            const cliente = clientes.find(function (c) {
+                return c.id === agendamento.clienteId;
+            });
+            const nomeCliente = cliente ? cliente.nome.toLowerCase() : "";
+
+            if (!nomeCliente.includes(termoPesquisa)) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
+    // Ordena por data e, dentro do mesmo dia, por horário
+    filtrados.sort(function (a, b) {
+        if (a.data !== b.data) {
+            return a.data < b.data ? -1 : 1;
+        }
+        return horarioParaMinutos(a.horario) - horarioParaMinutos(b.horario);
+    });
+
+    return filtrados;
+}
+
+// Qualquer mudança nos filtros/pesquisa redesenha a tabela
+campoPesquisaAgendamentos.addEventListener("input", renderizarTabelaAgendamentos);
+campoFiltroDataAgendamentos.addEventListener("input", renderizarTabelaAgendamentos);
+campoFiltroStatusAgendamentos.addEventListener("change", renderizarTabelaAgendamentos);
+campoFiltroServicoAgendamentos.addEventListener("change", renderizarTabelaAgendamentos);
+
 // Ao carregar a página
 popularSelectClientes();
 popularSelectServicos();
+popularFiltroServicoAgendamentos();
 renderizarTabelaAgendamentos();

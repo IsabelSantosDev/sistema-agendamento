@@ -484,8 +484,7 @@ h1, h2, h3{
 
     .menu-principal{
         width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
     }
 
     .formulario{
